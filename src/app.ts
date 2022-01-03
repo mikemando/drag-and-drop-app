@@ -13,7 +13,7 @@ class ProjectInput {
             this.templateElement.content,
             true
         );
-        this.element = importedNode.firstElementChild as HTMLFormElement;
+        this.element = importedNode.firstElementChild! as HTMLFormElement;
         this.attach();
     }
 
