@@ -57,6 +57,20 @@ function validate(validatableInput: Validatable) {
     return isValid;
 }
 
+class ProjectState {
+    private projects: any[] = [];
+
+    addProject(title: string, description: string, numOfpeople: number) {
+        const newProject = {
+            id: Math.random().toString(),
+            title: title,
+            description: description,
+            people: numOfpeople,
+        };
+        this.projects.push(newProject);
+    }
+}
+
 class ProjectList {
     templateElement: HTMLTemplateElement;
     hostElement: HTMLDivElement;
