@@ -59,6 +59,16 @@ function validate(validatableInput: Validatable) {
 
 class ProjectState {
     private projects: any[] = [];
+    private static instance: ProjectState;
+
+    private constructor() {}
+
+    static getInstance() {
+        if (this.instance) {
+            return this.instance;
+        }
+        return (this.instance = new ProjectState());
+    }
 
     addProject(title: string, description: string, numOfpeople: number) {
         const newProject = {
@@ -70,6 +80,8 @@ class ProjectState {
         this.projects.push(newProject);
     }
 }
+
+const projectState = ProjectState.getInstance();
 
 class ProjectList {
     templateElement: HTMLTemplateElement;
@@ -186,7 +198,7 @@ class ProjectInput {
         const userInput = this.getUserInput();
         if (Array.isArray(userInput)) {
             const [title, description, peopleNum] = userInput;
-            console.log(title, description, peopleNum);
+            projectState.addProject(title, description, peopleNum);
             this.clearUserInput();
         }
     }
