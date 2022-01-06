@@ -126,7 +126,7 @@ class ProjectList {
         )! as HTMLUListElement;
         for (const prjItem of this.assignedProjects) {
             const listItem = document.createElement("li");
-            listItem.textContent = prjItem.titleInput;
+            listItem.textContent = prjItem.title;
             listEL.appendChild(listItem);
         }
     }
