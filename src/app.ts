@@ -191,10 +191,14 @@ class ProjectItem
     }
 
     @autobind
-    dragStartHandler(event: DragEvent) {}
+    dragStartHandler(event: DragEvent) {
+        console.log(event);
+    }
 
     @autobind
-    dragEndHandler(_: DragEvent) {}
+    dragEndHandler(_: DragEvent) {
+        console.log("dragEnd");
+    }
 
     configure() {
         this.element.addEventListener("dragstart", this.dragStartHandler);
@@ -208,7 +212,10 @@ class ProjectItem
     }
 }
 
-class ProjectList extends Component<HTMLDivElement, HTMLElement> {
+class ProjectList
+    extends Component<HTMLDivElement, HTMLElement>
+    implements DragTarget
+{
     assignedProjects: Project[];
 
     constructor(private type: "active" | "finished") {
@@ -220,17 +227,26 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
         this.renderContent();
     }
 
-    private renderedProjects() {
-        const listEL = document.getElementById(
-            `${this.type}-projects-list`
-        )! as HTMLUListElement;
-        listEL.innerHTML = "";
-        for (const prjItem of this.assignedProjects) {
-            new ProjectItem(this.element.querySelector("ul")!.id, prjItem);
-        }
+    @autobind
+    dragOverHandler(_: DragEvent) {
+        const listEL = this.element.querySelector("ul")!;
+        listEL.classList.add("droppable");
     }
 
+    @autobind
+    dragLeaveHandler(_: DragEvent) {
+        const listEl = this.element.querySelector("ul")!;
+        listEl.classList.remove("droppable");
+    }
+
+    @autobind
+    dropHandler(_: DragEvent) {}
+
     configure() {
+        this.element.addEventListener("dragover", this.dragOverHandler);
+        this.element.addEventListener("dragleave", this.dragLeaveHandler);
+        this.element.addEventListener("drop", this.dropHandler);
+
         projectState.addListener((projects: Project[]) => {
             const relevantProjects = projects.filter((project) => {
                 if (this.type === "active") {
@@ -248,6 +264,16 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
         this.element.querySelector("ul")!.id = listId;
         this.element.querySelector("h2")!.textContent =
             this.type.toUpperCase() + " PROJECTS";
+    }
+
+    private renderedProjects() {
+        const listEL = document.getElementById(
+            `${this.type}-projects-list`
+        )! as HTMLUListElement;
+        listEL.innerHTML = "";
+        for (const prjItem of this.assignedProjects) {
+            new ProjectItem(this.element.querySelector("ul")!.id, prjItem);
+        }
     }
 }
 
